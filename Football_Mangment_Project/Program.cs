@@ -7,6 +7,7 @@ namespace Football_Mangment_Project
     {
         static void Main(string[] args)
         {
+
             Player Mohamed_Salah= new Player("mohamed salah",1,10,Position.RW);
 
             Player marmoush = new Player("Omar Marmoush", 2, 22, Position.LW);
@@ -18,11 +19,16 @@ namespace Football_Mangment_Project
             
             
             Team EgyptTeam = new Team("Egypt national team", Egypt, TeamType.NationalTeam, EgyptCoach);
+
+            EgyptTeam.PlayerAdded += (p, t) => Console.WriteLine($"Add Operation==>player {p.Name} added to {t.TeamName}");
+
+
             EgyptTeam.AddPlayer(Mohamed_Salah);
             EgyptTeam.AddPlayer(marmoush);
 
 
-
+            EgyptTeam.PlayerRemoved += (p, t) => Console.WriteLine($"Remove Operation==> player {p.Name} removed from {t.TeamName}");
+            EgyptTeam.RemovePlayer(marmoush);
 
             foreach (Player player in EgyptTeam.PlayerList)
             {
@@ -56,6 +62,8 @@ namespace Football_Mangment_Project
             Console.WriteLine("Strikers:");
             foreach (var s in LW)
                 Console.WriteLine(s);
+
+
 
 
         }

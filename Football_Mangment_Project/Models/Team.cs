@@ -17,6 +17,9 @@ namespace Football_Mangment_Project.Models
         public Coach Coach { get; set; }  // Association
         public string TeamName { get; set; }
 
+        public event Action<Player,Team> PlayerAdded;
+        public event Action<Player, Team> PlayerRemoved;
+
         public Team(string TeamName,Country country, TeamType type, Coach coach)
         {
             this.TeamName= TeamName;
@@ -42,11 +45,16 @@ namespace Football_Mangment_Project.Models
             }
 
             this.PlayerList.Add(player);
+
+            PlayerAdded?.Invoke(player, this); //Event check null exception
+
         }
 
         public void RemovePlayer(Player player)
         {
             PlayerList.Remove(player);
+
+            PlayerRemoved?.Invoke(player, this);
         }
 
        
