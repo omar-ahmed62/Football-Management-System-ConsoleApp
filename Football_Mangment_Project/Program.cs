@@ -59,13 +59,29 @@ namespace Football_Mangment_Project
 
 
             var LW = EgyptTeam.SearchPlayer(p => p.Position == Position.LW);
-            Console.WriteLine("Strikers:");
+            Console.WriteLine("Left Wingers:");
             foreach (var s in LW)
+                Console.WriteLine(s);
+
+            var ShirtNO = EgyptTeam.SearchPlayer(p => p.ShirtNumber == 10);
+            Console.WriteLine("Players with ShirtNumber 10:");
+            foreach (var s in ShirtNO)
                 Console.WriteLine(s);
 
 
 
 
+
+            
+
+            Country Argentina = new Country("Egypt", Continent.NorthAmerica);
+            Coach ArgentinaCoach = new Coach("Lionel Scaloni", 2);
+            Team ArgentinaTeam = new Team("Argentina national team", Argentina, TeamType.NationalTeam, ArgentinaCoach);
+
+            Match final = new Match(EgyptTeam, ArgentinaTeam);
+            final.MatchFinished += m => Console.WriteLine($"match finished \n winner: {m.GetWinner()}");
+            final.SetResult(3, 1);
+        
         }
 
     }
