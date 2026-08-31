@@ -70,9 +70,18 @@ namespace Football_Mangment_Project
 
 
 
+            int NO_RW = EgyptTeam.CountPlayersByPosition(Position.RW);
+            Console.WriteLine($"Number of right wingers: {NO_RW}");
+
+            var groups = EgyptTeam.GroupPlayersByPosition();
+            foreach(var x in groups)
+            {
+                Console.WriteLine($"{x.Key}: {x.Count()} players");
+                foreach (var player in x)
+                    Console.WriteLine($"  - {player.Name}");
+            }
 
 
-            
 
             Country Argentina = new Country("Egypt", Continent.NorthAmerica);
             Coach ArgentinaCoach = new Coach("Lionel Scaloni", 2);
@@ -81,7 +90,11 @@ namespace Football_Mangment_Project
             Match final = new Match(EgyptTeam, ArgentinaTeam);
             final.MatchFinished += m => Console.WriteLine($"match finished \n winner: {m.GetWinner()}");
             final.SetResult(3, 1);
-        
+
+
+            var search = worldCup.FindTeamByName("Egypt national team");
+            Console.WriteLine(search);
+
         }
 
     }
