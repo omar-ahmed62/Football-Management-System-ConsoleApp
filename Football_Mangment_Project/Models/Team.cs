@@ -57,19 +57,26 @@ namespace Football_Mangment_Project.Models
             PlayerRemoved?.Invoke(player, this);
         }
 
-       
-
-        public List<Player> SearchPlayer(Predicate<Player> filter)  
+        public List<Player> SearchPlayer(Func<Player,bool> filter)
         {
-            List<Player> Result = new List<Player>();
-            foreach (Player item in PlayerList)
-            {
-                if (filter(item))
-                    Result.Add(item);
-            }
-            return Result;
+            return PlayerList.Where(filter).ToList();
         }
 
+        public int CountPlayersByPosition(Position position)
+        {
+            return PlayerList.Count(p => p.Position == position);
+        }
+
+        
+        public IEnumerable<IGrouping<Position, Player>> GroupPlayersByPosition()
+        {
+            var result =
+                from p in PlayerList
+                group p by p.Position into list
+                select list;
+
+            return result;
+        }
 
         public override string ToString()
         {
