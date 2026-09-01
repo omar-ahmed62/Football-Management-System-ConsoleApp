@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Football_Mangment_Project.Models
 {
@@ -45,9 +46,40 @@ namespace Football_Mangment_Project.Models
             MatchesPlayed.Add(match);
         }
 
+        public List<Goal> GetAllGoals()
+        {
+            List<Goal> list = new List<Goal>();
+
+            foreach (Match match in MatchesPlayed)
+            {
+                list.AddRange(match.AwayTeamGoals);
+                list.AddRange(match.HomeTeamGoals);
+                
+            }
+            return list;
+        }
+
+        public Player GetTopScorer()
+        {
+            var AllGoals= GetAllGoals();
+            var grouped = AllGoals.GroupBy(s => s.Scorer);
+            var result = from c in grouped
+                         orderby c.Count() descending
+                         select c.Key;
+            
+            return result.FirstOrDefault();
+        }
+
+
         public override string ToString()
         {
             return $"Tournament Name = {TournamentName} \n Type = {Type}";
         }
+
+
+
+
+
+
     }
     }
