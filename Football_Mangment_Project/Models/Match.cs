@@ -5,13 +5,18 @@ using System.Text;
 
 namespace Football_Mangment_Project
 {
+    public enum TeamGoal
+    {
+        Home,
+        Away
+    }
     internal class Match
     {
         public Team HomeTeam { get; set; }
         public Team AwayTeam { get; set; }
-        public int HomeGoals { get; set; }
-        public int AwayGoals { get; set; }
         public DateTime MatchDate { get; set; }
+        public List<Goal> HomeTeamGoals { get; set; } = new List<Goal>();
+        public List<Goal> AwayTeamGoals { get; set; } = new List<Goal>();
 
         public event Action<Match> MatchFinished;
 
@@ -26,29 +31,50 @@ namespace Football_Mangment_Project
             this.AwayTeam = AwayTeam;
         }
 
-        public void SetResult(int homeGoals, int awayGoals)
+        public int GetHomeGoals()
         {
-            if (homeGoals < 0 || awayGoals < 0)
-            {
-                throw new ArgumentException("Goals cant be negative");
-            }
-            this.HomeGoals = homeGoals;
-            this.AwayGoals = awayGoals;
+            return HomeTeamGoals.Count;
+        }
 
+        public int GetAwayGoals()
+        {
+            return AwayTeamGoals.Count;
+        }
+
+        
+        public void AddGoal(Goal goal, TeamGoal team)
+        {
+            if (team == TeamGoal.Home)
+                HomeTeamGoals.Add(goal);
+            else
+                AwayTeamGoals.Add(goal);
+        }
+
+        public void FinishMatch()
+        {
             MatchFinished?.Invoke(this);
-        } 
+        }
 
         public string GetWinner()
         {
-            if(HomeGoals >AwayGoals)
+            int homeGoals = GetHomeGoals();
+            int awayGoals = GetAwayGoals();
+
+            if (homeGoals > awayGoals)
                 return HomeTeam.TeamName;
 
-            else if(AwayGoals > HomeGoals)
+            else if (homeGoals < awayGoals)
                 return AwayTeam.TeamName;
 
             else return "Draw";
-
         }
+
+        public string GetResult()
+        {
+            return ($"{HomeTeam.TeamName} {GetHomeGoals()} - {GetAwayGoals()} {AwayTeam.TeamName}");
+        }
+
+
 
 
     }
