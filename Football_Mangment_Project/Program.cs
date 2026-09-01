@@ -112,6 +112,10 @@ namespace Football_Mangment_Project
             final.FinishMatch();
             Console.WriteLine(final.GetResult());
 
+            worldCup.AddMatch(Semifinal);
+            worldCup.AddMatch(final);
+
+            Console.WriteLine($"Top Scorer: {worldCup.GetTopScorer().Name}");
 
         }
 
