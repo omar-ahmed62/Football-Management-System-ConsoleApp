@@ -13,6 +13,7 @@ namespace Football_Mangment_Project.Models
     {
         public string TournamentName { get; set; }
         public List<Team> TeamsParticipated { get; private set; }
+        public List<Match> MatchesPlayed { get; private set; } = new List<Match>();
         public TournamentType Type { get; set; }
 
         public Tournament(string tournamentName, TournamentType type)
@@ -34,6 +35,14 @@ namespace Football_Mangment_Project.Models
         public void RemoveTeam(Team team) 
         {
             TeamsParticipated.Remove(team);
+        }
+
+        public void AddMatch(Match match)
+        {
+            if (match == null)
+                throw new ArgumentNullException("Null Exception");
+
+            MatchesPlayed.Add(match);
         }
 
         public override string ToString()
