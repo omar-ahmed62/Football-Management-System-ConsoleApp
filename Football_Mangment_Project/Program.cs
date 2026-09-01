@@ -30,6 +30,9 @@ namespace Football_Mangment_Project
             EgyptTeam.PlayerRemoved += (p, t) => Console.WriteLine($"Remove Operation==> player {p.Name} removed from {t.TeamName}");
             EgyptTeam.RemovePlayer(marmoush);
 
+
+            EgyptTeam.AddPlayer(marmoush);
+
             foreach (Player player in EgyptTeam.PlayerList)
             {
                 Console.WriteLine(player);
@@ -83,19 +86,35 @@ namespace Football_Mangment_Project
 
 
 
-            Country Argentina = new Country("Egypt", Continent.NorthAmerica);
+            Country Argentina = new Country("Argentina", Continent.NorthAmerica);
             Coach ArgentinaCoach = new Coach("Lionel Scaloni", 2);
             Team ArgentinaTeam = new Team("Argentina national team", Argentina, TeamType.NationalTeam, ArgentinaCoach);
 
-            Match final = new Match(EgyptTeam, ArgentinaTeam);
+            Match Semifinal = new Match(EgyptTeam, ArgentinaTeam);
+            Semifinal.MatchFinished += m => Console.WriteLine($"match finished \n winner: {m.GetWinner()}");
+            Semifinal.AddGoal(new Goal(Mohamed_Salah, 11),TeamGoal.Home);
+            Semifinal.AddGoal(new Goal(Mohamed_Salah, 67), TeamGoal.Home);
+            Semifinal.AddGoal(new Goal(Mohamed_Salah, 80), TeamGoal.Home);
+
+            Semifinal.FinishMatch();
+            Console.WriteLine(Semifinal.GetResult());
+
+
+            Country Brazil=new Country("Brazil",  Continent.NorthAmerica);
+            Coach BrazilCoach = new Coach("Anceloti", 3);
+            Team BrazilTeam = new Team("Brazil national team", Brazil, TeamType.NationalTeam, BrazilCoach);
+
+            Match final = new Match(EgyptTeam, BrazilTeam);
             final.MatchFinished += m => Console.WriteLine($"match finished \n winner: {m.GetWinner()}");
-            final.SetResult(3, 1);
+            final.AddGoal(new Goal(Mohamed_Salah, 11), TeamGoal.Home);
+            final.AddGoal(new Goal(marmoush, 90), TeamGoal.Home);
 
+            final.FinishMatch();
+            Console.WriteLine(final.GetResult());
 
-            var search = worldCup.FindTeamByName("Egypt national team");
-            Console.WriteLine(search);
 
         }
+
 
     }
 }
