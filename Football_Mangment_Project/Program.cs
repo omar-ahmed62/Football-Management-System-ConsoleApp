@@ -64,9 +64,19 @@ namespace Football_Mangment_Project
                 {
                     Console.Write("Enter Team Name: ");
                     string name = Console.ReadLine();
+                    while (string.IsNullOrWhiteSpace(name) || name.All(char.IsDigit))
+                    {
+                        Console.Write("Invalid Name. Enter Team Name: ");
+                        name = Console.ReadLine();
+                    }
 
                     Console.Write("Enter Country Name: ");
                     string CountryName = Console.ReadLine();
+                    while (string.IsNullOrWhiteSpace(CountryName) || CountryName.All(char.IsDigit))
+                    {
+                        Console.Write("Invalid Name. Enter Country Name: ");
+                        CountryName = Console.ReadLine();
+                    }
 
                     Console.WriteLine("\n Select Continent Name: ");
                     var continent = Enum.GetValues(typeof(Continent));
@@ -77,13 +87,22 @@ namespace Football_Mangment_Project
                         index_1++;
                     }
                     Console.Write("choose: ");
-                    int x = int.Parse(Console.ReadLine());
+                    int x;
+                    while ( !int.TryParse(Console.ReadLine(), out x) || x < 1 || x > continent.Length )
+                    {
+                        Console.Write("Invalid option, try again: ");
+                    }
                     Continent selectedContinent = (Continent)(x - 1);
 
                     Country country = new Country(CountryName, selectedContinent);
 
                     Console.Write("\n Enter coach Name: ");
                     string CoachName = Console.ReadLine();
+                    while (string.IsNullOrWhiteSpace(CoachName) || CoachName.All(char.IsDigit))
+                    {
+                        Console.Write("Invalid Name. Enter coach Name: ");
+                        CoachName = Console.ReadLine();
+                    }
                     Coach coach = new Coach(CoachName, teams.Count + 1);
 
 
@@ -96,7 +115,11 @@ namespace Football_Mangment_Project
                         index_2++;
                     }
                     Console.Write("choose: ");
-                    int y = int.Parse(Console.ReadLine());
+                    int y;
+                    while (!int.TryParse(Console.ReadLine(), out y) || y < 1 || y > teamTypes.Length)
+                    {
+                        Console.Write("Invalid, try again: ");
+                    }
                     TeamType SelectedTeamType = (TeamType)(y - 1);
 
                     Team newTeam = new Team(name, country, SelectedTeamType, coach);
@@ -131,7 +154,11 @@ namespace Football_Mangment_Project
                 index++;
             }
             Console.Write("choose: ");
-            int x = int.Parse(Console.ReadLine());
+            int x;
+            while (!int.TryParse(Console.ReadLine(), out x) || x < 1 || x > teams.Count)
+            {
+                Console.Write("Invalid option, try again: ");
+            }
             return teams[x - 1];
         }
 
@@ -164,9 +191,19 @@ namespace Football_Mangment_Project
 
                         Console.Write("Player Name: ");
                         string PlayerName= Console.ReadLine();
+                        while (string.IsNullOrWhiteSpace(PlayerName) || PlayerName.All(char.IsDigit))
+                        {
+                            Console.Write("Invalid Name. Enter Player Name: ");
+                            PlayerName = Console.ReadLine();
+                        }
 
                         Console.Write("Shirt Number: ");
-                        int ShirtNumber = int.Parse(Console.ReadLine());
+                        int ShirtNumber;
+                        while (!int.TryParse(Console.ReadLine(), out ShirtNumber) || ShirtNumber < 1 || ShirtNumber >= 100)
+                        {
+                            Console.Write("Invalid option, try again: ");
+                        }
+
 
                         Console.WriteLine("Select Position: ");
                         var positions= Enum.GetValues(typeof(Position));
@@ -176,8 +213,14 @@ namespace Football_Mangment_Project
                             Console.WriteLine($"{index}.{position}");
                             index++;
                         }
+
                         Console.Write("choose: ");
-                        int y = int.Parse(Console.ReadLine());
+                        int y;
+                        while (!int.TryParse(Console.ReadLine(), out y) || y < 1 || y > positions.Length)
+                        {
+                            Console.Write("Invalid option, try again: ");
+
+                        }
                         Position selectedPosition = (Position)(y - 1);
 
                         Player player= new Player(PlayerName, selectedTeam.PlayerList.Count +1, ShirtNumber, selectedPosition);
