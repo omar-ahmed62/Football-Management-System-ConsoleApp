@@ -8,7 +8,7 @@ namespace Football_Mangment_Project
     {
         static void Main(string[] args)
         {
-            List<Team> AllTeams=new List<Team>();
+            List<Team> AllTeams = new List<Team>();
 
             Console.WriteLine("  FOOTBALL MANGMENT SYSTEM");
 
@@ -27,7 +27,7 @@ namespace Football_Mangment_Project
                 string choice = Console.ReadLine();
 
                 if (choice == "1")
-                    Console.WriteLine("Player Management selected");
+                    PlayerMenu(AllTeams);
                 else if (choice == "2")
                     TeamMenu(AllTeams);
                 else if (choice == "3")
@@ -82,12 +82,12 @@ namespace Football_Mangment_Project
 
                     Country country = new Country(CountryName, selectedContinent);
 
-                    Console.Write("Enter coach Name: ");
+                    Console.Write("\n Enter coach Name: ");
                     string CoachName = Console.ReadLine();
                     Coach coach = new Coach(CoachName, teams.Count + 1);
 
 
-                    Console.WriteLine("Select TeamType: ");
+                    Console.WriteLine("\n Select TeamType: ");
                     var teamTypes = Enum.GetValues(typeof(TeamType));
                     int index_2 = 1;
                     foreach (TeamType t in teamTypes)
@@ -120,6 +120,98 @@ namespace Football_Mangment_Project
             }
 
         }
-    }
 
+        static Team SelectedTeam(List<Team>teams)
+        {
+            Console.WriteLine("select team: ");
+            int index = 1;
+            foreach (Team t in teams)
+            {
+                Console.WriteLine($"{index}.{t.TeamName}");
+                index++;
+            }
+            Console.Write("choose: ");
+            int x = int.Parse(Console.ReadLine());
+            return teams[x - 1];
+        }
+
+        static void PlayerMenu(List<Team> teams)
+        {
+            bool running = true;
+
+            while (running)
+            {
+                Console.WriteLine("===============");
+                Console.WriteLine("--- Player Management ---");
+                Console.WriteLine("1. Add Player");
+                Console.WriteLine("2. Display All Players");
+                Console.WriteLine("3. Back");
+                Console.Write("Choose: ");
+
+                string choice = Console.ReadLine();
+
+                if (choice == "1")
+                {
+                    if(teams.Count==0)
+                    {
+                        Console.WriteLine("Please add team first to assign players to");
+                        TeamMenu(teams);
+                    }
+
+                    else
+                    {
+                        Team selectedTeam = SelectedTeam(teams);
+
+                        Console.Write("Player Name: ");
+                        string PlayerName= Console.ReadLine();
+
+                        Console.Write("Shirt Number: ");
+                        int ShirtNumber = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine("Select Position: ");
+                        var positions= Enum.GetValues(typeof(Position));
+                        int index = 1;
+                        foreach (Position position in positions)
+                        {
+                            Console.WriteLine($"{index}.{position}");
+                            index++;
+                        }
+                        Console.Write("choose: ");
+                        int y = int.Parse(Console.ReadLine());
+                        Position selectedPosition = (Position)(y - 1);
+
+                        Player player= new Player(PlayerName, selectedTeam.PlayerList.Count +1, ShirtNumber, selectedPosition);
+                        selectedTeam.AddPlayer(player);
+                        Console.WriteLine($"{PlayerName}({selectedPosition}) added successfully to {selectedTeam}");
+
+                    }
+                }
+
+                else if (choice == "2")
+                {
+                    if (teams.Count == 0)
+                    {
+                        Console.WriteLine("No teams available");
+                    }
+                    else 
+                    {
+                        Team selectedTeam = SelectedTeam(teams);
+                        Console.WriteLine($"Team Name:{selectedTeam.TeamName}");
+                        foreach (Player p in selectedTeam.PlayerList)
+                        {
+                            Console.WriteLine($"\t{p.Name}");
+                        }
+                    }
+                }
+
+                else if (choice == "3")
+                    running=false;
+                else
+                    Console.WriteLine("Invalid choise");
+            }
+
+
+        }
+
+    }
 }
