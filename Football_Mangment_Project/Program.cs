@@ -1,5 +1,6 @@
 ﻿using Football_Mangment_Project.Models;
 using System.Collections;
+using System.Xml.Linq;
 
 namespace Football_Mangment_Project
 {
@@ -7,118 +8,118 @@ namespace Football_Mangment_Project
     {
         static void Main(string[] args)
         {
+            List<Team> AllTeams=new List<Team>();
 
-            Player Mohamed_Salah= new Player("mohamed salah",1,10,Position.RW);
+            Console.WriteLine("  FOOTBALL MANGMENT SYSTEM");
 
-            Player marmoush = new Player("Omar Marmoush", 2, 22, Position.LW);
-
-            Country Egypt = new Country("Egypt", Continent.Africa);
-            
-           
-            Coach EgyptCoach = new Coach("hossam hassan",1);
-            
-            
-            Team EgyptTeam = new Team("Egypt national team", Egypt, TeamType.NationalTeam, EgyptCoach);
-
-            EgyptTeam.PlayerAdded += (p, t) => Console.WriteLine($"Add Operation==>player {p.Name} added to {t.TeamName}");
-
-
-            EgyptTeam.AddPlayer(Mohamed_Salah);
-            EgyptTeam.AddPlayer(marmoush);
-
-
-            EgyptTeam.PlayerRemoved += (p, t) => Console.WriteLine($"Remove Operation==> player {p.Name} removed from {t.TeamName}");
-            EgyptTeam.RemovePlayer(marmoush);
-
-
-            EgyptTeam.AddPlayer(marmoush);
-
-            foreach (Player player in EgyptTeam.PlayerList)
+            bool running = true;
+            while (running)
             {
-                Console.WriteLine(player);
-            }
+                Console.WriteLine("==============================");
+                Console.WriteLine("1. Player Mangment");
+                Console.WriteLine("2. Team Mangment");
+                Console.WriteLine("3. Match Mangment");
+                Console.WriteLine("4. Exit");
+                Console.WriteLine("===============");
 
-            Console.WriteLine(EgyptTeam);
-            Console.WriteLine(EgyptTeam.Country.CountryName);
-            Console.WriteLine(EgyptTeam.Coach);
+                Console.Write("Choose: ");
 
+                string choice = Console.ReadLine();
 
-
-            Tournament worldCup = new Tournament("World Cup", TournamentType.NationalTeamsTournament);
-
-            worldCup.AddTeam(EgyptTeam);
-
-            Console.WriteLine(worldCup);
-            Console.WriteLine(EgyptTeam);
-
-           
-
-            foreach (Team item in worldCup.TeamsParticipated)
-            {
-                Console.WriteLine(item);
+                if (choice == "1")
+                    Console.WriteLine("Player Management selected");
+                else if (choice == "2")
+                    TeamMenu(AllTeams);
+                else if (choice == "3")
+                    Console.WriteLine("Match Management selected");
+                else if (choice == "4")
+                    running = false;
+                else
+                    Console.WriteLine("Invalid choice\n");
             }
 
 
-
-
-            var LW = EgyptTeam.SearchPlayer(p => p.Position == Position.LW);
-            Console.WriteLine("Left Wingers:");
-            foreach (var s in LW)
-                Console.WriteLine(s);
-
-            var ShirtNO = EgyptTeam.SearchPlayer(p => p.ShirtNumber == 10);
-            Console.WriteLine("Players with ShirtNumber 10:");
-            foreach (var s in ShirtNO)
-                Console.WriteLine(s);
-
-
-
-            int NO_RW = EgyptTeam.CountPlayersByPosition(Position.RW);
-            Console.WriteLine($"Number of right wingers: {NO_RW}");
-
-            var groups = EgyptTeam.GroupPlayersByPosition();
-            foreach(var x in groups)
-            {
-                Console.WriteLine($"{x.Key}: {x.Count()} players");
-                foreach (var player in x)
-                    Console.WriteLine($"  - {player.Name}");
-            }
-
-
-
-            Country Argentina = new Country("Argentina", Continent.NorthAmerica);
-            Coach ArgentinaCoach = new Coach("Lionel Scaloni", 2);
-            Team ArgentinaTeam = new Team("Argentina national team", Argentina, TeamType.NationalTeam, ArgentinaCoach);
-
-            Match Semifinal = new Match(EgyptTeam, ArgentinaTeam);
-            Semifinal.MatchFinished += m => Console.WriteLine($"match finished \n winner: {m.GetWinner()}");
-            Semifinal.AddGoal(new Goal(Mohamed_Salah, 11),TeamGoal.Home);
-            Semifinal.AddGoal(new Goal(Mohamed_Salah, 67), TeamGoal.Home);
-            Semifinal.AddGoal(new Goal(Mohamed_Salah, 80), TeamGoal.Home);
-
-            Semifinal.FinishMatch();
-            Console.WriteLine(Semifinal.GetResult());
-
-
-            Country Brazil=new Country("Brazil",  Continent.NorthAmerica);
-            Coach BrazilCoach = new Coach("Anceloti", 3);
-            Team BrazilTeam = new Team("Brazil national team", Brazil, TeamType.NationalTeam, BrazilCoach);
-
-            Match final = new Match(EgyptTeam, BrazilTeam);
-            final.MatchFinished += m => Console.WriteLine($"match finished \n winner: {m.GetWinner()}");
-            final.AddGoal(new Goal(Mohamed_Salah, 11), TeamGoal.Home);
-            final.AddGoal(new Goal(marmoush, 90), TeamGoal.Home);
-
-            final.FinishMatch();
-            Console.WriteLine(final.GetResult());
-
-            worldCup.AddMatch(Semifinal);
-            worldCup.AddMatch(final);
-
-            Console.WriteLine($"Top Scorer: {worldCup.GetTopScorer().Name}");
 
         }
 
 
+
+        static void TeamMenu(List<Team> teams)
+        {
+            bool running = true;
+
+            while (running)
+            {
+                Console.WriteLine("===============");
+                Console.WriteLine("--- Team Management ---");
+                Console.WriteLine("1. Add Team");
+                Console.WriteLine("2. Display All Teams");
+                Console.WriteLine("3. Back");
+                Console.Write("Choose: ");
+
+                string choice = Console.ReadLine();
+
+
+                if (choice == "1")
+                {
+                    Console.Write("Enter Team Name: ");
+                    string name = Console.ReadLine();
+
+                    Console.Write("Enter Country Name: ");
+                    string CountryName = Console.ReadLine();
+
+                    Console.WriteLine("\n Select Continent Name: ");
+                    var continent = Enum.GetValues(typeof(Continent));
+                    int index_1 = 1;
+                    foreach (Continent c in continent)
+                    {
+                        Console.WriteLine($"{index_1}. {c}");
+                        index_1++;
+                    }
+                    Console.Write("choose: ");
+                    int x = int.Parse(Console.ReadLine());
+                    Continent selectedContinent = (Continent)(x - 1);
+
+                    Country country = new Country(CountryName, selectedContinent);
+
+                    Console.Write("Enter coach Name: ");
+                    string CoachName = Console.ReadLine();
+                    Coach coach = new Coach(CoachName, teams.Count + 1);
+
+
+                    Console.WriteLine("Select TeamType: ");
+                    var teamTypes = Enum.GetValues(typeof(TeamType));
+                    int index_2 = 1;
+                    foreach (TeamType t in teamTypes)
+                    {
+                        Console.WriteLine($"{index_2}. {t}");
+                        index_2++;
+                    }
+                    Console.Write("choose: ");
+                    int y = int.Parse(Console.ReadLine());
+                    TeamType SelectedTeamType = (TeamType)(y - 1);
+
+                    Team newTeam = new Team(name, country, SelectedTeamType, coach);
+                    teams.Add(newTeam);
+
+                    Console.WriteLine($"{name} added successfully!");
+                }
+
+                else if (choice == "2")
+                {
+                    foreach (Team t in teams)
+                    {
+                        Console.WriteLine($"Team Name: {t.TeamName}");
+                    }
+                }
+
+                else if (choice == "3")
+                    running = false;
+                else
+                    Console.WriteLine("Invalid");
+            }
+
+        }
     }
+
 }
