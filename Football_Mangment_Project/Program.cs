@@ -9,6 +9,7 @@ namespace Football_Mangment_Project
         static void Main(string[] args)
         {
             List<Team> AllTeams = new List<Team>();
+            List<Match> AllMatches = new List<Match>();
 
             Console.WriteLine("  FOOTBALL MANGMENT SYSTEM");
 
@@ -31,7 +32,7 @@ namespace Football_Mangment_Project
                 else if (choice == "2")
                     TeamMenu(AllTeams);
                 else if (choice == "3")
-                    Console.WriteLine("Match Management selected");
+                    MatchMenu(AllTeams, AllMatches);
                 else if (choice == "4")
                     running = false;
                 else
@@ -146,7 +147,6 @@ namespace Football_Mangment_Project
 
         static Team SelectedTeam(List<Team>teams)
         {
-            Console.WriteLine("select team: ");
             int index = 1;
             foreach (Team t in teams)
             {
@@ -187,6 +187,7 @@ namespace Football_Mangment_Project
 
                     else
                     {
+                        Console.WriteLine("select team: ");
                         Team selectedTeam = SelectedTeam(teams);
 
                         Console.Write("Player Name: ");
@@ -256,5 +257,161 @@ namespace Football_Mangment_Project
 
         }
 
+        static Match SelectedMatch(List<Match> matches)
+        {
+            int index = 1;
+            foreach (Match m in matches)
+            {
+                Console.WriteLine($"{index}.{m.HomeTeam} vs {m.AwayTeam}");
+                index++;
+            }
+            Console.Write("choose: ");
+            int x;
+            while (!int.TryParse(Console.ReadLine(), out x) || x < 1 || x > matches.Count)
+            {
+                Console.Write("Invalid option, try again: ");
+            }
+            return matches[x - 1];
+        }
+
+        static Player SelectedPlayer(Team team)
+        {
+            int index = 1;
+            foreach (Player p in team.PlayerList)
+            {
+                Console.WriteLine($"{index}.{p.Name}");
+                index++;
+            }
+            int x;
+            while (!int.TryParse(Console.ReadLine(), out x) || x < 1 || x > team.PlayerList.Count)
+            {
+                Console.Write("Invalid option, try again: ");
+            }
+            return team.PlayerList[x - 1];
+        }
+        static void MatchMenu(List<Team> teams,List<Match> matches) 
+        {
+            bool running = true;
+            while(running)
+            {
+                Console.WriteLine("===============");
+                Console.WriteLine("--- Match Management ---");
+                Console.WriteLine("1. Create Match");
+                Console.WriteLine("2. Add Goal");
+                Console.WriteLine("3. Finish Match");
+                Console.WriteLine("4. Display All Matches"); 
+                Console.WriteLine("5. Back");
+                Console.Write("Choose: ");
+
+                string choice = Console.ReadLine();
+
+                if (choice == "1")
+                {
+                    if (teams.Count < 2)
+                    {
+                        Console.WriteLine("No Enough Teams for match creation");
+                        TeamMenu(teams);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Select Home Team ");
+                        Team HomeTeam = SelectedTeam(teams);
+                        Console.WriteLine("Select Away Team ");
+                        Team AwayTeam = SelectedTeam(teams);
+
+                        while(HomeTeam == AwayTeam)
+                        {
+                            Console.WriteLine("Home Team and Away Team cannot be the same. \n Select Away Team again:");
+                            AwayTeam = SelectedTeam(teams);
+                        }
+
+                        Match match = new Match(HomeTeam, AwayTeam);
+                        matches.Add(match);
+                        Console.WriteLine($"Match added successfully \n {HomeTeam} vs {AwayTeam}");
+                    }
+                }
+
+                else if (choice == "2")
+                {
+                    if(matches.Count == 0 )
+                    {
+                        Console.WriteLine("No available matches");
+                    }
+                    else 
+                    {
+                        Match selectedMatch = SelectedMatch(matches);
+                        Console.WriteLine("1. Home Team");
+                        Console.WriteLine("2. Away Team");
+                        Console.Write("Which team scored? ");
+                        int teamChoice;
+                        while (!int.TryParse(Console.ReadLine(), out teamChoice) || (teamChoice != 1 && teamChoice != 2))
+                        {
+                            Console.Write("Invalid option, try again: ");
+                        }
+
+                        Team TeamScored;
+                        TeamGoal teamGoal;
+                        if(teamChoice == 1)
+                        {
+                            TeamScored = selectedMatch.HomeTeam;
+                            teamGoal = TeamGoal.Home;
+                        }
+                        else
+                        {
+                            TeamScored = selectedMatch.AwayTeam;
+                            teamGoal = TeamGoal.Away;
+                        }
+
+                        if (TeamScored.PlayerList.Count == 0)
+                        {
+                            Console.WriteLine($"{TeamScored.TeamName} has no players yet. Please add one first.");
+                            PlayerMenu(teams);
+                        }
+                        else
+                        {
+                            Console.WriteLine("choose scorer");
+                            Player Scorer = SelectedPlayer(TeamScored);
+
+                            Goal goal = new Goal(Scorer);
+                            selectedMatch.AddGoal(goal, teamGoal);
+
+                            Console.WriteLine($"Goal added: {Scorer.Name}");
+                        }
+
+                    }
+                }
+
+                else if (choice == "3")
+                {
+                    if (matches.Count == 0)
+                    {
+                        Console.WriteLine("No available matches");
+                    }
+                    else
+                    {
+                        Match selectedMatch = SelectedMatch(matches);
+                        selectedMatch.FinishMatch();
+                        Console.WriteLine($"Match finished: {selectedMatch.GetResult()}");
+                        Console.WriteLine($"Winner: {selectedMatch.GetWinner()}");
+                    }
+                }
+
+                else if (choice== "4")
+                {
+                    foreach(Match match in matches)
+                    {
+                        Console.WriteLine($"{match.HomeTeam}: {match.GetHomeGoals()}  vs {match.AwayTeam}: {match.GetAwayGoals()} ");
+                        Console.WriteLine($"winner: {match.GetWinner()} ");
+
+                    }
+                }
+
+                else if (choice == "5")
+                    running = false;
+                else
+                    Console.WriteLine("Invalid choice");
+            }
+
+        }
     }
 }
