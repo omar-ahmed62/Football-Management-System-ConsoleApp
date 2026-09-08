@@ -1,4 +1,5 @@
-﻿using Football_Mangment_Project.Models;
+﻿using Football_Mangment_Project.Business;
+using Football_Mangment_Project.Models;
 using System.Collections;
 using System.Xml.Linq;
 
@@ -39,11 +40,7 @@ namespace Football_Mangment_Project
                     Console.WriteLine("Invalid choice\n");
             }
 
-
-
         }
-
-
 
         static void TeamMenu(List<Team> teams)
         {
@@ -97,6 +94,13 @@ namespace Football_Mangment_Project
 
                     Country country = new Country(CountryName, selectedContinent);
 
+                    int countryId = Country_Business.GetID(CountryName);
+                    if (countryId == 0)
+                    {
+                        Country_Business.AddCountry(CountryName, selectedContinent);
+                        countryId = Country_Business.GetID(CountryName);
+                    }
+
                     Console.Write("\n Enter coach Name: ");
                     string CoachName = Console.ReadLine();
                     while (string.IsNullOrWhiteSpace(CoachName) || CoachName.All(char.IsDigit))
@@ -106,6 +110,15 @@ namespace Football_Mangment_Project
                     }
                     Coach coach = new Coach(CoachName, teams.Count + 1);
 
+                    int coachId = Coach_Business.GetID(CoachName);
+                    while (coachId != 0)
+                    {
+                        Console.Write($"Coach '{CoachName}' already manages another team. Enter a different coach name: ");
+                        CoachName = Console.ReadLine();
+                        coachId = Coach_Business.GetID(CoachName);
+                    }
+                    Coach_Business.AddCoach(CoachName);
+                    coachId = Coach_Business.GetID(CoachName);
 
                     Console.WriteLine("\n Select TeamType: ");
                     var teamTypes = Enum.GetValues(typeof(TeamType));
@@ -124,6 +137,8 @@ namespace Football_Mangment_Project
                     TeamType SelectedTeamType = (TeamType)(y - 1);
 
                     Team newTeam = new Team(name, country, SelectedTeamType, coach);
+
+                    Team_Business.AddTeam(name, countryId, SelectedTeamType, coachId);
                     teams.Add(newTeam);
 
                     Console.WriteLine($"{name} added successfully!");
@@ -225,6 +240,10 @@ namespace Football_Mangment_Project
                         Position selectedPosition = (Position)(y - 1);
 
                         Player player= new Player(PlayerName, selectedTeam.PlayerList.Count +1, ShirtNumber, selectedPosition);
+
+                        int teamId = Team_Business.GetID(selectedTeam.TeamName);
+                        Player_Business.AddPlayer(PlayerName, ShirtNumber, selectedPosition, teamId);
+
                         selectedTeam.AddPlayer(player);
                         Console.WriteLine($"{PlayerName}({selectedPosition}) added successfully to {selectedTeam}");
 
