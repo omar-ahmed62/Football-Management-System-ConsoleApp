@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Xml.Linq;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Football_Mangment_Project
 {
@@ -44,6 +46,8 @@ namespace Football_Mangment_Project
 
         static void TeamMenu(List<Team> teams)
         {
+            using var context = new Context();
+
             bool running = true;
 
             while (running)
@@ -93,8 +97,9 @@ namespace Football_Mangment_Project
                     Continent selectedContinent = (Continent)(x - 1);
 
                     Country country = new Country(CountryName, selectedContinent);
+                    context.Countries.Add(country);
+                    context.SaveChanges();
 
-                   
 
                     Console.Write("\n Enter coach Name: ");
                     string CoachName = Console.ReadLine();
@@ -103,9 +108,11 @@ namespace Football_Mangment_Project
                         Console.Write("Invalid Name. Enter coach Name: ");
                         CoachName = Console.ReadLine();
                     }
-                    Coach coach = new Coach(CoachName, teams.Count + 1);
+                    Coach coach = new Coach(CoachName);
+                    context.Coaches.Add(coach);
+                    context.SaveChanges();
 
-                    
+
 
                     Console.WriteLine("\n Select TeamType: ");
                     var teamTypes = Enum.GetValues(typeof(TeamType));
@@ -125,6 +132,10 @@ namespace Football_Mangment_Project
 
                     Team newTeam = new Team(name, country, SelectedTeamType, coach);
                     teams.Add(newTeam);
+
+                    context.Teams.Add(newTeam);
+                    context.SaveChanges();
+
                     Console.WriteLine($"{name} added successfully!");
                 }
 
@@ -163,6 +174,8 @@ namespace Football_Mangment_Project
 
         static void PlayerMenu(List<Team> teams)
         {
+            using var context = new Context();
+
             bool running = true;
 
             while (running)
@@ -223,9 +236,11 @@ namespace Football_Mangment_Project
                         }
                         Position selectedPosition = (Position)(y - 1);
 
-                        Player player= new Player(PlayerName, selectedTeam.PlayerList.Count +1, ShirtNumber, selectedPosition);
+                        Player player= new Player(PlayerName,ShirtNumber, selectedPosition, selectedTeam.Id);
+                        context.Players.Add(player);
+                        context.SaveChanges();
 
-                       
+
                         selectedTeam.AddPlayer(player);
                         Console.WriteLine($"{PlayerName}({selectedPosition}) added successfully to {selectedTeam}");
 
@@ -292,6 +307,8 @@ namespace Football_Mangment_Project
         }
         static void MatchMenu(List<Team> teams,List<Match> matches) 
         {
+            using var context = new Context();
+
             bool running = true;
             while(running)
             {
@@ -326,8 +343,11 @@ namespace Football_Mangment_Project
                             AwayTeam = SelectedTeam(teams);
                         }
 
-                        Match match = new Match(HomeTeam, AwayTeam);
+                        Match match = new Match(HomeTeam.Id, AwayTeam.Id);
                         matches.Add(match);
+
+                        context.Matches.Add(match);
+                        context.SaveChanges();
 
                         Console.WriteLine($"Match added successfully \n {HomeTeam} vs {AwayTeam}");
                     }
@@ -335,13 +355,21 @@ namespace Football_Mangment_Project
 
                 else if (choice == "2")
                 {
-                    if(matches.Count == 0 )
+                    var activeMatches = context.Matches                        
+                        .Include(m => m.HomeTeam)
+                        .ThenInclude(t => t.PlayerList)
+                        .Include(m => m.AwayTeam)
+                        .ThenInclude(t => t.PlayerList)
+                        .ToList();
+
+                    if (activeMatches.Count == 0)
                     {
                         Console.WriteLine("No available matches");
                     }
+                   
                     else 
                     {
-                        Match selectedMatch = SelectedMatch(matches);
+                        Match selectedMatch = SelectedMatch(activeMatches);
                         Console.WriteLine("1. Home Team");
                         Console.WriteLine("2. Away Team");
                         Console.Write("Which team scored? ");
@@ -377,6 +405,8 @@ namespace Football_Mangment_Project
                             Goal goal = new Goal(Scorer);
                             selectedMatch.AddGoal(goal, teamGoal);
 
+                            context.Goals.Add(goal);
+                            context.SaveChanges();
                            
                             Console.WriteLine($"Goal added: {Scorer.Name}");
                         }

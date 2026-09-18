@@ -45,7 +45,7 @@ namespace Football_Mangment_Project.Migrations
 
                     b.HasIndex("HomeTeamId");
 
-                    b.ToTable("Matches");
+                    b.ToTable("Matches", (string)null);
                 });
 
             modelBuilder.Entity("Football_Mangment_Project.Models.Coach", b =>
@@ -62,7 +62,7 @@ namespace Football_Mangment_Project.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Coaches");
+                    b.ToTable("Coaches", (string)null);
                 });
 
             modelBuilder.Entity("Football_Mangment_Project.Models.Country", b =>
@@ -82,7 +82,7 @@ namespace Football_Mangment_Project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Football_Mangment_Project.Models.Goal", b =>
@@ -108,7 +108,7 @@ namespace Football_Mangment_Project.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("Goals");
+                    b.ToTable("Goals", (string)null);
                 });
 
             modelBuilder.Entity("Football_Mangment_Project.Models.Player", b =>
@@ -136,7 +136,7 @@ namespace Football_Mangment_Project.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Players");
+                    b.ToTable("Players", (string)null);
                 });
 
             modelBuilder.Entity("Football_Mangment_Project.Models.Team", b =>
@@ -167,7 +167,7 @@ namespace Football_Mangment_Project.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Teams");
+                    b.ToTable("Teams", (string)null);
                 });
 
             modelBuilder.Entity("Football_Mangment_Project.Match", b =>

@@ -31,14 +31,14 @@ namespace Football_Mangment_Project
 
         }
 
-        public Match (Team HomeTeam, Team AwayTeam)
+        public Match (int HomeTeamId, int AwayTeamId)
         {
-            if(HomeTeam ==AwayTeam)
+            if(HomeTeamId ==AwayTeamId)
             {
                 throw new ArgumentException("HomeTeam = AwayTeam");
             }
-            this.HomeTeam = HomeTeam;
-            this.AwayTeam = AwayTeam;
+            this.HomeTeamId = HomeTeamId;
+            this.AwayTeamId = AwayTeamId;
         }
 
 

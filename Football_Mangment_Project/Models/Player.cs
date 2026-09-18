@@ -16,9 +16,10 @@ namespace Football_Mangment_Project.Models
         public int TeamId { get; set; }
         public Team Team { get; set; }
 
-        public Player(string name, int ID, int shirtNumber, Position position) : base(name, ID)
+        public Player(string name, int shirtNumber, Position position, int TeamId) : base(name)
         {
             this.Position = position;
+            this.TeamId = TeamId;
 
             if (shirtNumber > 0 && shirtNumber < 100)
                 this.ShirtNumber = shirtNumber;
@@ -26,6 +27,10 @@ namespace Football_Mangment_Project.Models
                 throw new ArgumentException("Invalid ShirtNumber");
         }
 
+        public Player() : base("")
+        {
+
+        }
 
         public override string ToString()
         {

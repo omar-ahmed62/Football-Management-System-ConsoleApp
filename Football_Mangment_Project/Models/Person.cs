@@ -20,6 +20,11 @@ namespace Football_Mangment_Project.Models
             this.Name=name;
         }
 
+        public Person(string name)
+        {
+            Name = name;
+        }
+
         public override string ToString()
         {
             return $" ID = {ID} \n Name = {Name}";
