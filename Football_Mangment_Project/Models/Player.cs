@@ -12,6 +12,10 @@ namespace Football_Mangment_Project.Models
     {
         public int ShirtNumber {  get; set; }
         public Position Position { get; set; }
+
+        public int TeamId { get; set; }
+        public Team Team { get; set; }
+
         public Player(string name, int ID, int shirtNumber, Position position) : base(name, ID)
         {
             this.Position = position;

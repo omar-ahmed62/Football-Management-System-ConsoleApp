@@ -13,14 +13,23 @@ namespace Football_Mangment_Project
     internal class Match
     {
         public int Id { get; set; }
+
+        public int HomeTeamId { get; set; }
         public Team HomeTeam { get; set; }
+
+        public int AwayTeamId { get; set; }
         public Team AwayTeam { get; set; }
+
         public DateTime MatchDate { get; set; }
-        public List<Goal> HomeTeamGoals { get; set; } = new List<Goal>();
-        public List<Goal> AwayTeamGoals { get; set; } = new List<Goal>();
+
+        public List<Goal> Goals { get; set; } = new List<Goal>();
 
         public event Action<Match> MatchFinished;
+        
+        public Match()
+        {
 
+        }
 
         public Match (Team HomeTeam, Team AwayTeam)
         {
@@ -32,23 +41,21 @@ namespace Football_Mangment_Project
             this.AwayTeam = AwayTeam;
         }
 
+
         public int GetHomeGoals()
         {
-            return HomeTeamGoals.Count;
+            return Goals.Count(g => g.TeamGoal == TeamGoal.Home);
         }
 
         public int GetAwayGoals()
         {
-            return AwayTeamGoals.Count;
+            return Goals.Count(g => g.TeamGoal == TeamGoal.Away);
         }
 
-        
         public void AddGoal(Goal goal, TeamGoal team)
         {
-            if (team == TeamGoal.Home)
-                HomeTeamGoals.Add(goal);
-            else
-                AwayTeamGoals.Add(goal);
+            goal.TeamGoal = team;
+            Goals.Add(goal);
         }
 
         public void FinishMatch()

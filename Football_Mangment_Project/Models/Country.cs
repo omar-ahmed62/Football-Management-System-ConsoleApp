@@ -10,6 +10,7 @@ namespace Football_Mangment_Project.Models
     }
     internal class Country
     {
+        public int Id { get; set; }
         public string CountryName { get; set; }
         public Continent Continent { get; set; }
         public Country(string countryName, Continent continent)
@@ -17,5 +18,9 @@ namespace Football_Mangment_Project.Models
             this.CountryName = countryName;
             this.Continent = continent;
         }
+
+
+        public ICollection<Team> Teams { get; set; }
+
     }
 }

@@ -52,8 +52,7 @@ namespace Football_Mangment_Project.Models
 
             foreach (Match match in MatchesPlayed)
             {
-                list.AddRange(match.AwayTeamGoals);
-                list.AddRange(match.HomeTeamGoals);
+                list.AddRange(match.Goals);
                 
             }
             return list;

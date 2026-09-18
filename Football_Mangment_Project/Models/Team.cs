@@ -11,14 +11,27 @@ namespace Football_Mangment_Project.Models
     }
     internal class Team
     {
-        public TeamType TeamType { get; set; }
-        public List<Player> PlayerList {  get; private set; }  // Aggregation (Team has Players)
-        public Country Country { get; set; } // Association
-        public Coach Coach { get; set; }  // Association
+        public int Id { get; set; }
         public string TeamName { get; set; }
+
+        public TeamType TeamType { get; set; }
+
+        public int CountryId { get; set; }
+        public Country Country { get; set; } 
+
+        public int CoachId { get; set; }
+        public Coach Coach { get; set; }  
+
+        public List<Player> PlayerList { get; private set; }  
+
 
         public event Action<Player,Team> PlayerAdded;
         public event Action<Player, Team> PlayerRemoved;
+
+        public Team() 
+        {
+
+        }
 
         public Team(string TeamName,Country country, TeamType type, Coach coach)
         {
