@@ -12,6 +12,7 @@ namespace Football_Mangment_Project
     }
     internal class Match
     {
+        public int Id { get; set; }
         public Team HomeTeam { get; set; }
         public Team AwayTeam { get; set; }
         public DateTime MatchDate { get; set; }

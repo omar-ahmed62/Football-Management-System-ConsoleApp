@@ -30,5 +30,19 @@ namespace Football_Mangment_Project.Business
             return DB_Layer.select("SELECT * FROM Player");
         }
 
+        public static int GetID(string PlayerName, int TeamID)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                 new SqlParameter("@PlayerName", PlayerName),
+                  new SqlParameter("@TeamID", TeamID)
+            };
+            DataTable dt = DB_Layer.select("SELECT PlayerID FROM Player WHERE PlayerName = @PlayerName AND TeamID = @TeamID", parameters);
+
+            if (dt.Rows.Count > 0)
+                return Convert.ToInt32(dt.Rows[0]["PlayerID"]);
+
+            return 0;
+        }
     }
 }

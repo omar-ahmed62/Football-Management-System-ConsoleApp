@@ -41,6 +41,21 @@ namespace Football_Mangment_Project.Data_Access
 
             return roweffect;
         }
+        public static int InsertAndGetId(string cmd, SqlParameter[] parameters = null)
+        {
+            SqlConnection con = new SqlConnection("Data Source=.;Initial Catalog=FootballConsoleDB;Integrated Security=True;Trust Server Certificate=True");
+            SqlCommand cmdd = new SqlCommand(cmd, con);
 
-    }
+            if (parameters != null)
+            {
+                cmdd.Parameters.AddRange(parameters);
+            }
+            con.Open();
+            int newId = Convert.ToInt32(cmdd.ExecuteScalar());
+            con.Close();
+
+            return newId;
+        }
+    }   
+
 }

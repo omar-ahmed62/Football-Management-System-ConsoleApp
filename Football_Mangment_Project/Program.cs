@@ -345,7 +345,13 @@ namespace Football_Mangment_Project
                         }
 
                         Match match = new Match(HomeTeam, AwayTeam);
+                        int homeTeamId = Team_Business.GetID(HomeTeam.TeamName);
+                        int awayTeamId = Team_Business.GetID(AwayTeam.TeamName);
                         matches.Add(match);
+
+
+                        match.Id = Match_Business.AddMatch(homeTeamId, awayTeamId);
+
                         Console.WriteLine($"Match added successfully \n {HomeTeam} vs {AwayTeam}");
                     }
                 }
@@ -393,6 +399,10 @@ namespace Football_Mangment_Project
 
                             Goal goal = new Goal(Scorer);
                             selectedMatch.AddGoal(goal, teamGoal);
+
+                            int scoredTeamId = Team_Business.GetID(TeamScored.TeamName);
+                            int scorerId = Player_Business.GetID(Scorer.Name, scoredTeamId);
+                            Goal_Business.AddGoal(selectedMatch.Id, scorerId, teamGoal);
 
                             Console.WriteLine($"Goal added: {Scorer.Name}");
                         }
