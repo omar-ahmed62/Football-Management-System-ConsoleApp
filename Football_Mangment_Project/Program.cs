@@ -96,10 +96,16 @@ namespace Football_Mangment_Project
                     }
                     Continent selectedContinent = (Continent)(x - 1);
 
-                    Country country = new Country(CountryName, selectedContinent);
-                    context.Countries.Add(country);
-                    context.SaveChanges();
 
+                    Country country = context.Countries
+                        .FirstOrDefault(c => c.CountryName == CountryName);
+
+                    if (country == null)
+                    {
+                        country = new Country(CountryName, selectedContinent);
+                        context.Countries.Add(country);
+                        context.SaveChanges();
+                    }
 
                     Console.Write("\n Enter coach Name: ");
                     string CoachName = Console.ReadLine();
@@ -108,10 +114,27 @@ namespace Football_Mangment_Project
                         Console.Write("Invalid Name. Enter coach Name: ");
                         CoachName = Console.ReadLine();
                     }
-                    Coach coach = new Coach(CoachName);
-                    context.Coaches.Add(coach);
-                    context.SaveChanges();
 
+                    Coach coach = context.Coaches
+                        .Include(c => c.team)
+                        .FirstOrDefault(c=> c.Name == CoachName);
+
+                    while (coach != null && coach.team != null)
+                    {
+                        Console.Write($"Coach '{CoachName}' already manages another team. Enter a different coach name: ");
+                        CoachName = Console.ReadLine();
+
+                        coach = context.Coaches
+                            .Include(c => c.team)
+                            .FirstOrDefault(c => c.Name == CoachName);
+                    }
+                    
+                    if(coach == null)
+                    {
+                        coach = new Coach(CoachName);
+                        context.Coaches.Add(coach);
+                        context.SaveChanges();
+                    }
 
 
                     Console.WriteLine("\n Select TeamType: ");
@@ -129,6 +152,15 @@ namespace Football_Mangment_Project
                         Console.Write("Invalid, try again: ");
                     }
                     TeamType SelectedTeamType = (TeamType)(y - 1);
+
+                    Team team = context.Teams.FirstOrDefault(t=> t.TeamName == name);
+                    while(team != null)
+                    {
+                        Console.Write($"Team '{name}' team already found. Enter a different team name: ");
+                        name= Console.ReadLine();
+
+                        team = context.Teams.FirstOrDefault(t => t.TeamName == name);
+                    }
 
                     Team newTeam = new Team(name, country, SelectedTeamType, coach);
                     teams.Add(newTeam);
@@ -236,7 +268,22 @@ namespace Football_Mangment_Project
                         }
                         Position selectedPosition = (Position)(y - 1);
 
-                        Player player= new Player(PlayerName,ShirtNumber, selectedPosition, selectedTeam.Id);
+                        Player player = context.Players
+                            .FirstOrDefault(p => p.ShirtNumber == ShirtNumber && p.TeamId == selectedTeam.Id);
+                        
+                        while(player!=null)
+                        {
+                            Console.Write($"[[Player] '{PlayerName}' is already taken in this team. Enter a different coach name: ");
+                            while (!int.TryParse(Console.ReadLine(), out ShirtNumber) || ShirtNumber < 1 || ShirtNumber >= 100)
+                            {
+                                Console.Write("Invalid option, try again: ");
+                            }
+
+                            player = context.Players
+                                .FirstOrDefault(p => p.ShirtNumber == ShirtNumber && p.TeamId == selectedTeam.Id);
+                        }
+
+                        player= new Player(PlayerName,ShirtNumber, selectedPosition, selectedTeam.Id);
                         context.Players.Add(player);
                         context.SaveChanges();
 
